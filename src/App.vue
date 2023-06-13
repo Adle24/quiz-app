@@ -87,11 +87,16 @@ export default {
   },
   methods: {
     questionAnswered(is_correct) {
-      if(is_correct) {
+      if (is_correct) {
         this.totalCorrect++;
       }
 
       this.questionsAnswered++;
+    },
+
+    reset() {
+      this.questionsAnswered = 0;
+      this.totalCorrect = 0;
     }
   },
   components: { Questions, Result }
@@ -100,9 +105,13 @@ export default {
 
 <template>
   <div class="ctr">
-    <Questions :questionsAnswered="questionsAnswered" :questions="questions" v-if="questionsAnswered < questions.length" @question-answered="questionAnswered" />
-    <Result v-else />
-    <button type="button" class="reset-btn">Reset</button>
+    <Transition name="fade" mode="out-in">
+      <Questions :questionsAnswered="questionsAnswered" :questions="questions" v-if="questionsAnswered < questions.length"
+        @question-answered="questionAnswered" />
+      <Result v-else :results="results" :totalCorrect="totalCorrect" />
+    </Transition>
+    <button v-if="questionsAnswered === questions.length" type="button" class="reset-btn"
+      @click.prevent="reset">Reset</button>
   </div>
 </template>
 
